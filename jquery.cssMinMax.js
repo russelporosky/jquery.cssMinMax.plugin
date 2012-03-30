@@ -1,5 +1,5 @@
 /******************************************
- * jQuery.cssMinMax v0.1 indyarmy.com
+ * jQuery.cssMinMax v0.2 indyarmy.com
  *
  * A CSS3 min() and max() polyfill plugin for jQuery.
  *
@@ -15,57 +15,31 @@
 
 ;( function( $ ) {
 	"use strict";
-	var pluginName = "cssMinMax", // Mainly for temporary DOM elements
-	sheetText = []; // all stylesheets as a single string
+	var pluginName = "cssMinMax"; // Mainly for temporary DOM elements
 	$.fn.cssMinMax = function( option, settings ) {
-		var data, i, c;
-		if ( typeof option === "object" ) {
-			settings = option;
-		} else if ( typeof option === "string" ) {
-			data = this.data( "_" + pluginName );
-			if ( data ) {
-				if ( $.fn.cssMinMax.defaultSettings[ option ] !== undefined ) {
-					if ( settings !== undefined ) {
-						data.settings[ option ] = settings;
-						return true;
-					} else {
-						return data.settings[ option ];
-					}
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		}
-
-		settings = $.extend( true, {}, $.fn.cssMinMax.defaultSettings, settings || {} );
-
-		for ( i = 0, c = document.styleSheets.length; i < c; i++ ) {
-			// Combine all stylesheets into a single text string
-			sheetText.push( document.styleSheets[i].ownerNode.textContent );
-		}
-		sheetText = sheetText.join( "\n" );
+		var sheetText = [],
+		i, c;
 
 		return this.each( function() {
-			var $elem = $( this ),
-			$settings = jQuery.extend( true, {}, settings ),
-			cssMinMax = new CssMinMax( $settings );
+			if ( !$( document ).data( "_" + pluginName ) ) {
+				for ( i = 0, c = document.styleSheets.length; i < c; i++ ) {
+					// Combine all stylesheets into a single text string
+					sheetText.push( document.styleSheets[i].ownerNode.textContent );
+				}
+				sheetText = sheetText.join( "\n" );
+				$( document ).data( "_" + pluginName, {
+					sheetText : sheetText,
+					cssMinMax: new CssMinMax( sheetText )
+				});
+			}
 
-			cssMinMax.generate();
-
-			$elem.data("_" + pluginName, cssMinMax);
+			$( document ).data( "_" + pluginName ).cssMinMax.generate();
+			$( window ).bind("resize." + pluginName, $( document ).data( "_" + pluginName ).cssMinMax.generate );
 		} );
 	};
 
-	$.fn.cssMinMax.defaultSettings = {
-		position	: "mouse",
-		color		: "black"
-	};
-
-	function CssMinMax( settings ) {
-		this.cssMinMax = null;
-		this.settings = settings;
+	function CssMinMax( sheetText ) {
+		this.sheetText = sheetText;
 		return this;
 	}
 
@@ -74,7 +48,7 @@
 			if ( typeof new CSSParser() === "object" ) {
 				var $this = this,
 				parser = new CSSParser(),
-				sheet = parser.parse( sheetText, false, false ),
+				sheet = parser.parse( $( document ).data( "_" + pluginName ).sheetText, false, false ),
 				i, c, j, d, k, e, splitRule, element, calc, type, rule, numbers, metric, finalSize;
 				sheet.resolveVariables("screen");
 				for ( i = 0, c = sheet.cssRules.length; i < c; i++ ) {
@@ -97,7 +71,7 @@
 									if ( splitRule[ 0 ].indexOf( "width" ) !== -1 ) {
 										metric = "width";
 									}
-									numbers[ k ] = this.getSize( numbers[ k ], numbers[ k ].substr( -2 ), element, metric );
+									numbers[ k ] = $( document ).data( "_" + pluginName ).cssMinMax.getSize( numbers[ k ], numbers[ k ].substr( -2 ), element, metric );
 								}
 							}
 							finalSize = parseFloat( eval( "Math." + type + "(" + numbers.join( "," ) + ")" ) );
@@ -105,6 +79,7 @@
 						}
 					}
 				}
+				parser = null;
 				return $this;
 			} else {
 				jQuery.error( "The JSCSSP library must be loaded before the " + pluginName + " plugin will work" );

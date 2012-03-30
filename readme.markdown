@@ -1,4 +1,4 @@
-# cssMinMax - jQuery Plugin
+# cssMinMax v0.2 - jQuery Plugin
 
 The cssMinMax polyfill plugin lets you use the new CSS3 min() and max() function in your stylesheets.
 
@@ -23,3 +23,10 @@ cssMinMax is very much alpha-quality right now. It has been tested in Firefox 11
 ## Extra Thanks
 
 Thanks to http://www.websanova.com/tutorials/jquery/jquery-plugin-development-boilerplate for providing a great boilerplate I could use for my second jQuery plugin
+
+## Changelog
+
+### v0.2
+
+* removed unnecessary settings and options code from boilerplate
+* binds to window resize event

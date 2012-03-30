@@ -1,0 +1,56 @@
+<!doctype html>
+<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"><![endif]-->
+<!--[if IE 7]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en"><![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
+	<head>
+		<meta charset="utf-8">
+		<title>jquery.cssMaxMin Demo</title>
+		<meta name="description" content="A CSS max()/min() polyfill plugin for jQuery.">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="jquery.cssMinMax.min.js"></script>
+		<style type="text/css">
+			#outerBox {
+				border: 1px solid #036;
+				margin: 0 auto;
+				width: 80%;
+			}
+			#demoBox1 {
+				background-color: #b3b3b3;
+				font-size: min(20px, 4em);
+				width: max(80%, 200px);
+			}
+			#demoBox2 {
+				background-color: #ddd;
+				height: max(5em, 100px);
+				width: min(50%, 350px);
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<h1>IndyArmy Network, Inc.</h1>
+			<h2>jquery.cssCalc</h2>
+		</header>
+		<div role="main">
+			<p>This box below has a width of 80%.</p>
+			<div id="outerBox">
+				<p id="demoBox1">This paragraph should have a max width of 80% of the parent or 200px. It also has a minimum font size of either 20px or 4em.</p>
+				<p id="demoBox2">This paragraph should have a min width of 50% of the parent or 350px. It has a maximum height of 5em or 100px.</p>
+			</div>
+		</div>
+		<footer>
+			<p>Licensed under the <a href="http://www.gnu.org/licenses/gpl.html">GPL v3</a></p>
+		</footer>
+		<script>
+			$(document).ready(function(){
+				$(document).cssMinMax();
+			});
+		</script>
+		<!--[if lt IE 7 ]>
+		<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+		<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+		<![endif]-->
+	</body>
+</html>
